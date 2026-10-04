@@ -8,7 +8,7 @@ def pytest_collection_modifyitems(config, items):
     """Skip tests marked `data` when the datasets haven't been downloaded."""
     if (ML1M_DIR / "ratings.dat").exists() and (ML1M_DIR / "movies_wiki.csv").exists():
         return
-    skip = pytest.mark.skip(reason="needs data/ml-1m (run scripts/download_data.py)")
+    skip = pytest.mark.skip(reason="needs data/ml-1m (download MovieLens-1M into data/ml-1m)")
     for item in items:
         if "data" in item.keywords:
             item.add_marker(skip)

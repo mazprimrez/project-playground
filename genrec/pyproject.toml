@@ -31,4 +31,4 @@ include = ["genrec*"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]   # so tests can import serving/
-markers = ["data: needs the datasets in data/ (run scripts/download_data.py)"]
+markers = ["data: needs the datasets in data/ (download MovieLens-1M into data/ml-1m)"]

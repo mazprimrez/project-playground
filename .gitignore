@@ -6,7 +6,7 @@ __pycache__/
 .pytest_cache/
 .ipynb_checkpoints/
 
-# data: MovieLens may not be redistributed - get it with scripts/download_data.py
+# data: MovieLens may not be redistributed - download it yourself (see genrec/README.md)
 data/
 results_smoke/
 

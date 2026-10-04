@@ -49,7 +49,6 @@ notebooks/
   movielens/           data overview (interaction-analysis), Wikipedia matching (phase-1), Qwen training/
                        evaluation/scoring (Colab), SASRec, TFRS, baselines (+ the combined results table)
 serving/               the lookup API (FastAPI) + Dockerfile
-scripts/               data download, lookup-table build, notebook builders
 results/               result tables (CSV)
 tests/                 pytest - incl. checks that the package reproduces the notebook results exactly
 data/, artifacts/      datasets and trained models (local only, git-ignored)
@@ -61,7 +60,7 @@ data/, artifacts/      datasets and trained models (local only, git-ignored)
 python3.12 -m venv .venv && source .venv/bin/activate
 pip install -e ".[train,prep,notebooks,serve,dev]"
 
-python scripts/download_data.py          # MovieLens-1M into data/
+# MovieLens-1M: download https://files.grouplens.org/datasets/movielens/ml-1m.zip and unzip it into data/ml-1m/
 ```
 
 Then build the Wikipedia-enriched movie file (`movies_wiki.csv`): run `notebooks/movielens/phase-1.ipynb`, which
@@ -88,8 +87,7 @@ python3.12 -m venv .venv-tf
 | classic baselines + the combined table | `notebooks/movielens/baselines.ipynb` | laptop, ~1 min |
 
 The Colab notebooks install this package from GitHub (`GENREC_REPO` in their first cell, installed with
-`#subdirectory=genrec`) and read the data from Google Drive. Notebooks are generated from
-`scripts/notebook_builders/*_cells.py` (`python scripts/notebook_builders/to_nb.py <cells.py> <notebook.ipynb> [--run]`).
+`#subdirectory=genrec`) and read the data from Google Drive.
 
 ```bash
 pytest                    # tests marked `data` need data/ml-1m
@@ -104,12 +102,10 @@ that title for Qwen). They are not calibrated chances and are spread over thousa
 Qwen's lists in the API were regenerated rather than taken from the evaluation run; GPU beam search isn't bit-for-bit
 repeatable, so they score HR@10 0.232 instead of the reported 0.236 (hit@1 is the same, 0.067).
 
-Build the tables, then serve them:
+The API only reads the four CSV tables in `artifacts/lookup/` (movies, users, recommendations, models) - no model,
+no dataset. They were built once from the models' outputs and are not in the repository (MovieLens-derived data).
 
 ```bash
-# Qwen's lists + probabilities: run notebooks/movielens/score_qwen_colab.ipynb on Colab and download qwen.csv
-#   into artifacts/lookup_inputs/; TFRS's come from notebooks/movielens/tfrs.ipynb, SASRec's from its saved model
-python scripts/build_lookup_table.py           # -> artifacts/lookup/ (and prints each model's metrics)
 uvicorn serving.app:app --reload               # interactive docs: http://localhost:8000/docs
 ```
 

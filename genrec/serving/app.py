@@ -1,7 +1,7 @@
 """GenRec lookup API: pre-computed movie recommendations for the 1,000 MovieLens-1M test users, from five models
 (random, most popular, TFRS sequential, SASRec, fine-tuned Qwen), with each model's probability.
 
-No model runs at request time - responses are table lookups (scripts/build_lookup_table.py), so it is fast and runs
+No model runs at request time - responses are table lookups (artifacts/lookup/), so it is fast and runs
 on the smallest machine.
 
 Configuration (environment variables):

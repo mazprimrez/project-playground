@@ -1,7 +1,7 @@
 # GenRec lookup API - small image, no model at runtime. Build from the genrec/ folder:
 #   docker build -f serving/Dockerfile -t genrec-api .
 #   docker run -p 7860:7860 -v $PWD/artifacts/lookup:/app/artifacts/lookup genrec-api
-# The lookup tables (scripts/build_lookup_table.py) contain MovieLens-derived data and are not baked into the image:
+# The lookup tables (artifacts/lookup/) contain MovieLens-derived data and are not baked into the image:
 # mount them, or on a Hugging Face Space set GENREC_HF_REPO (+ HF_TOKEN for a private dataset repo).
 FROM python:3.12-slim
 
