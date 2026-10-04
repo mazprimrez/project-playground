@@ -46,8 +46,8 @@ src/genrec/            the package (used by the notebooks and the API)
   lookup.py            the pre-computed recommendation tables for the API
   models/              baselines (random, popularity, ItemKNN, UserKNN), sasrec, qwen (inference), tfrs_models
 notebooks/
-  movielens/           Wikipedia matching (phase-1), Qwen training/evaluation/scoring (Colab), SASRec, TFRS,
-                       baselines (+ the combined results table)
+  movielens/           data overview (interaction-analysis), Wikipedia matching (phase-1), Qwen training/
+                       evaluation/scoring (Colab), SASRec, TFRS, baselines (+ the combined results table)
 serving/               the lookup API (FastAPI) + Dockerfile
 scripts/               data download, lookup-table build, notebook builders
 results/               result tables (CSV)
