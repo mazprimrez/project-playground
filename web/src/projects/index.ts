@@ -20,7 +20,7 @@ export const PROJECTS: ProjectInfo[] = [
       "Qwen2.5-0.5B fine-tuned to know 4,000 recent movies (2010-2023) and predict what a user watches next, " +
       "compared with SASRec, TensorFlow Recommenders and simple baselines.",
     tags: ["LLM fine-tuning", "Recommender systems", "PyTorch", "FastAPI"],
-    stat: { label: "HR@10 on 1,000 test users", value: "SASRec 0.182 · popularity 0.088 · LLM in training" },
+    stat: { label: "HR@10 on 1,000 test users", value: "LLM 0.139 · SASRec 0.182 · popularity 0.088" },
     Page: lazy(() => import("./genrec/GenrecPage")),
   },
 ];
