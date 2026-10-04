@@ -158,6 +158,7 @@ main { padding: 40px 0 64px; }
 .id-form button { background: none; border: 0; cursor: pointer; font-size: 16px; color: var(--text); padding: 0 4px; }
 
 .row-title { font-size: 15px; font-weight: 600; margin-bottom: 14px; }
+.row-metric { margin-left: 10px; font-size: 13px; font-weight: 500; color: var(--muted); font-variant-numeric: tabular-nums; cursor: help; }
 
 /* a row of 10 cards: fits the width on desktop, scrolls inside itself on small screens (never the page) */
 .poster-row { display: flex; gap: 10px; overflow-x: auto; padding: 4px 4px 8px; margin: -4px -4px 0; scrollbar-width: thin; }
