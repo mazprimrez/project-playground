@@ -1,0 +1,6 @@
+# What `gcloud run deploy --source .` uploads to Cloud Build: only the code the Dockerfile needs.
+# Data, models and environments are never uploaded (the lookup tables are mounted from a private bucket).
+.gcloudignore
+.git
+#!include:.gitignore
+#!include:.dockerignore
