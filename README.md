@@ -34,7 +34,8 @@ uvicorn app:app                         # UI + API on http://localhost:8000
 docker build -t playground .            # or: one image with both (port 8080 / $PORT, ready for Cloud Run)
 ```
 
-**Deploy** (Google Cloud Run, project `project-playground-mazi`, region `asia-southeast2`). The data tables are not in
+**Deploy:** every push to `main` is tested and deployed automatically by GitHub Actions
+([`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)). By hand (Google Cloud Run, project `project-playground-mazi`, region `asia-southeast2`). The data tables are not in
 the image: they live in the private bucket `gs://project-playground-mazi-data`, mounted read-only at `/mnt/data`.
 
 ```bash
