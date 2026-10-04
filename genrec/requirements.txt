@@ -1,0 +1,2 @@
+# everything (Qwen training, data prep, notebooks, API, tests); TensorFlow Recommenders: see README
+-e .[train,prep,notebooks,serve,dev]

@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "genrec"
+version = "0.1.0"
+description = "Generative (LLM) movie recommendation experiments on MovieLens-1M and MovieTweetings, with a lookup API"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = ["numpy", "pandas>=2.0"]
+
+[project.optional-dependencies]
+# the Qwen recommender and SASRec (the versions the notebooks were run with)
+torch = ["torch>=2.4", "transformers==5.18.0", "accelerate==1.15.0"]
+train = ["genrec[torch]", "peft==0.21.1"]
+# data preparation (Wikipedia plot matching)
+prep = ["kagglehub", "rapidfuzz"]
+# TensorFlow Recommenders - install in a separate environment
+tfrs = ["tensorflow==2.21.*", "tf-keras==2.21.*", "absl-py"]
+# the lookup API: no model at runtime
+serve = ["fastapi>=0.110", "uvicorn[standard]>=0.29", "huggingface_hub"]
+notebooks = ["matplotlib", "jinja2", "ipykernel", "tqdm"]
+dev = ["pytest", "httpx", "nbformat", "nbclient"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["genrec*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]   # so tests can import serving/
+markers = ["data: needs the datasets in data/ (run scripts/download_data.py)"]

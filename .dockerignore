@@ -1,0 +1,12 @@
+# keep the build context small: environments, data and models never go into the image
+.git
+**/.venv
+**/.venv-*
+**/__pycache__
+**/*.egg-info
+**/.pytest_cache
+**/.ipynb_checkpoints
+**/data
+**/artifacts
+**/notebooks
+**/results
