@@ -26,6 +26,7 @@ from pydantic import BaseModel
 from genrec.paths import ARTIFACTS_DIR
 
 TABLES: dict = {}
+POSTER_BASE = "https://image.tmdb.org/t/p/w342"   # TMDB image CDN, 342 px wide
 
 
 def lookup_dir() -> Path:
@@ -64,6 +65,7 @@ class Movie(BaseModel):
     title: str
     genres: list[str]
     year: int | None = None
+    poster_url: str | None = None   # TMDB poster, when movies.csv has a poster_path
 
 
 class ModelInfo(BaseModel):
@@ -100,7 +102,10 @@ class Recommendations(BaseModel):
 def movie(movie_id: int) -> Movie:
     row = TABLES["movies"].loc[movie_id]
     year = int(row["year"]) if pd.notna(row["year"]) else None
-    return Movie(movie_id=int(movie_id), title=row["title"], genres=[g for g in row["genres"].split("|") if g], year=year)
+    path = row.get("poster_path")
+    poster = f"{POSTER_BASE}{path}" if isinstance(path, str) and path else None
+    return Movie(movie_id=int(movie_id), title=row["title"], genres=[g for g in row["genres"].split("|") if g], year=year,
+                 poster_url=poster)
 
 
 def get_user(user_id: int) -> pd.Series:

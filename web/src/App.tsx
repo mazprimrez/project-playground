@@ -51,6 +51,10 @@ export default function App() {
         <div className="container">
           Built by <a href="https://github.com/mazprimrez" target="_blank" rel="noreferrer">mazprimrez</a> · code on{" "}
           <a href={REPO_URL} target="_blank" rel="noreferrer">GitHub</a>
+          <p className="credit">
+            Movie posters from <a href="https://www.themoviedb.org/" target="_blank" rel="noreferrer">TMDB</a>. This
+            product uses the TMDB API but is not endorsed or certified by TMDB.
+          </p>
         </div>
       </footer>
     </>

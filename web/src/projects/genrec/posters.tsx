@@ -1,6 +1,8 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 
-export type Movie = { movie_id: number; title: string; genres: string[]; year: number | null };
+export type Movie = {
+  movie_id: number; title: string; genres: string[]; year: number | null; poster_url?: string | null;
+};
 
 /** Poster art: a color per genre. Decorative - every card also prints its genres. */
 const GENRE_COLORS: Record<string, string> = {
@@ -32,17 +34,36 @@ export const posterLetter = (title: string) => bareTitle(title).replace(/^(The|A
 export function Poster({ movie, badges, children, highlight }: {
   movie: Movie; badges?: ReactNode; children?: ReactNode; highlight?: boolean;
 }) {
+  const [broken, setBroken] = useState(false);
+  const image = movie.poster_url && !broken ? movie.poster_url : null;
   const bg = genreColor(posterGenre(movie.genres));
-  const ink = inkFor(bg);
+  const meta = [movie.year, ...movie.genres.slice(0, 2)].filter(Boolean).join(" · ");
   return (
     <div className={`poster${highlight ? " is-next" : ""}`}>
-      <div className="poster-art" style={{ background: bg, color: ink }}>
-        <span className="poster-letter" aria-hidden="true">{posterLetter(movie.title)}</span>
-        {badges && <div className="poster-badges">{badges}</div>}
-        <div className="poster-title">{bareTitle(movie.title)}</div>
-        <div className="poster-meta">{[movie.year, ...movie.genres.slice(0, 2)].filter(Boolean).join(" · ")}</div>
+      {image ? (
+        // the real poster (it shows the title itself); the title is repeated underneath for reading and search
+        <div className="poster-art has-image" style={{ background: bg }}>
+          <img src={image} alt={`${bareTitle(movie.title)} poster`} loading="lazy" onError={() => setBroken(true)} />
+          {badges && <div className="poster-badges">{badges}</div>}
+        </div>
+      ) : (
+        // no poster found: a drawn one - genre color, big initial, title
+        <div className="poster-art" style={{ background: bg, color: inkFor(bg) }}>
+          <span className="poster-letter" aria-hidden="true">{posterLetter(movie.title)}</span>
+          {badges && <div className="poster-badges">{badges}</div>}
+          <div className="poster-title">{bareTitle(movie.title)}</div>
+          <div className="poster-meta">{meta}</div>
+        </div>
+      )}
+      <div className="poster-foot">
+        {image && (
+          <div className="poster-caption">
+            <div className="caption-title">{bareTitle(movie.title)}</div>
+            <div className="caption-meta">{meta}</div>
+          </div>
+        )}
+        {children}
       </div>
-      {children && <div className="poster-foot">{children}</div>}
     </div>
   );
 }

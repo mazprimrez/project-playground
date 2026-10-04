@@ -9,7 +9,8 @@ from genrec import lookup  # noqa: E402
 
 MOVIES = pd.DataFrame({"movie_id": [1, 2, 3, 4, 5], "title": ["Heat (1995)", "Fargo (1996)", "Alien (1979)",
                                                              "Big (1988)", "Jaws (1975)"],
-                       "genres": ["Action|Crime", "Crime", "Horror", "", "Thriller"], "year": [1995, 1996, 1979, 1988, 1975]})
+                       "genres": ["Action|Crime", "Crime", "Horror", "", "Thriller"], "year": [1995, 1996, 1979, 1988, 1975],
+                       "poster_path": ["/heat.jpg", None, None, "/big.jpg", None]})
 USERS = pd.DataFrame({"user_id": [10, 20], "history": [[1, 2], [3]], "next_movie_id": [4, 5]})
 RECS = pd.concat([
     lookup.to_rows("sasrec", [10, 20], [[(4, 0.5), (3, 0.2)], [(1, 0.3), (5, 0.1)]]),
@@ -46,7 +47,8 @@ def test_recommendations(client):
     r = client.get("/users/10/recommendations", params={"model": "sasrec"}).json()
     assert r["hit"] and [x["movie"]["movie_id"] for x in r["recommendations"]] == [4, 3]
     assert r["recommendations"][0] == {"rank": 1, "movie": {"movie_id": 4, "title": "Big (1988)", "genres": [],
-                                                            "year": 1988}, "probability": 0.5, "is_next_movie": True}
+                                                            "year": 1988, "poster_url": "https://image.tmdb.org/t/p/w342/big.jpg"},
+                                         "probability": 0.5, "is_next_movie": True}
     assert len(client.get("/users/20/recommendations", params={"model": "qwen", "k": 1}).json()["recommendations"]) == 1
     assert client.get("/users/10/recommendations", params={"model": "nope"}).status_code == 404
     assert client.get("/users/10/recommendations").json()["model"] == "qwen"    # the default when loaded
@@ -56,3 +58,4 @@ def test_compare_and_movie(client):
     c = client.get("/users/20/compare").json()
     assert [x["model"] for x in c] == ["sasrec", "qwen"] and [x["hit"] for x in c] == [True, True]
     assert client.get("/movies/3").json()["genres"] == ["Horror"]
+    assert client.get("/movies/3").json()["poster_url"] is None             # no poster found: the UI draws one
