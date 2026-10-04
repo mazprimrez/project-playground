@@ -46,8 +46,7 @@ src/genrec/            the package (used by the notebooks and the API)
   lookup.py            the pre-computed recommendation tables for the API
   models/              baselines (random, popularity, ItemKNN, UserKNN), sasrec, qwen (inference), tfrs_models
 notebooks/
-  movielens/           data overview (interaction-analysis), Wikipedia matching (phase-1), Qwen training/
-                       evaluation/scoring (Colab), SASRec, TFRS, baselines (+ the combined results table)
+  movielens/           data overview (interaction-analysis), SASRec, TFRS
 serving/               the lookup API (FastAPI) + Dockerfile
 results/               result tables (CSV)
 tests/                 pytest - incl. checks that the package reproduces the notebook results exactly
@@ -63,8 +62,8 @@ pip install -e ".[train,prep,notebooks,serve,dev]"
 # MovieLens-1M: download https://files.grouplens.org/datasets/movielens/ml-1m.zip and unzip it into data/ml-1m/
 ```
 
-Then build the Wikipedia-enriched movie file (`movies_wiki.csv`): run `notebooks/movielens/phase-1.ipynb`, which
-matches movies to the Kaggle dataset `jrobischon/wikipedia-movie-plots`.
+`movies_wiki.csv` (MovieLens movies matched to Wikipedia plots from the Kaggle dataset
+`jrobischon/wikipedia-movie-plots`) was built by a notebook that is now only in the git history (`phase-1.ipynb`).
 
 TensorFlow Recommenders needs its own environment (TFRS requires Keras 2):
 
@@ -80,14 +79,11 @@ python3.12 -m venv .venv-tf
 
 | step | notebook | where / time |
 |---|---|---|
-| train the Qwen recommender | `notebooks/movielens/train_qwen_colab.ipynb` | Colab GPU, ~2-4 h on an L4 |
-| evaluate it (top-10 lists + metrics) | `notebooks/movielens/eval_qwen_colab.ipynb` | Colab GPU, ~25 min |
 | SASRec (also saves the models) | `notebooks/movielens/sasrec.ipynb` | laptop, ~15 min |
 | TensorFlow Recommenders | `notebooks/movielens/tfrs.ipynb` (kernel *Python (.venv-tf)*) | laptop CPU, ~15 min |
-| classic baselines + the combined table | `notebooks/movielens/baselines.ipynb` | laptop, ~1 min |
 
-The Colab notebooks install this package from GitHub (`GENREC_REPO` in their first cell, installed with
-`#subdirectory=genrec`) and read the data from Google Drive.
+The Qwen training / evaluation / scoring notebooks (Colab) and the classic baselines notebook are in the git
+history; their results are in the table above and in `results/`.
 
 ```bash
 pytest                    # tests marked `data` need data/ml-1m
