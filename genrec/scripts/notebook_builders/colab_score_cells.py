@@ -6,7 +6,8 @@
 #
 # The top-10 lists come from the evaluation run (`eval_results_<model>.csv` on Drive, written by
 # `eval_qwen_colab.ipynb`), so they are exactly the lists behind the reported HR@10; this notebook only scores them
-# (one forward pass per user, a few minutes). Without that file it generates the lists first (~25 min on an L4).
+# (one forward pass per user, a few minutes). Without that file it generates the lists first (~25 min on an L4);
+# GPU beam search isn't bit-for-bit repeatable, so regenerated lists score slightly differently (HR@10 0.232 vs 0.236).
 #
 # **Before you run:** Runtime → Change runtime type → GPU; set the paths below; Runtime → Run all. Then download
 # `qwen.csv` from Drive into `genrec/artifacts/lookup_inputs/qwen.csv` and run `python scripts/build_lookup_table.py`.
@@ -71,7 +72,7 @@ else:
                             progress=lambda it: tqdm(it, desc="batches"))
 
 metrics = evaluate_lists([tops[u] for u in test_users], [target(ds.sequences[u], "test") for u in test_users])
-print({k: round(v, 3) for k, v in metrics.items()}, "(should match the reported numbers, e.g. HR@10 0.236 for v2)")
+print({k: round(v, 3) for k, v in metrics.items()}, "(reported: HR@10 0.236 for v2 - exact with the eval file, ~0.005 off when regenerated)")
 
 # %% [markdown]
 # ## Probabilities

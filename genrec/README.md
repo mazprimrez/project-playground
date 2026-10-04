@@ -101,6 +101,8 @@ Pre-computed recommendations for the 1,000 test users from five models - random,
 SASRec-200 and Qwen v2 - each with a **probability**: the model's P(next movie = X) over the movies the user hasn't
 rated (uniform for random, rating share for popularity, softmax for SASRec/TFRS, the probability of answering exactly
 that title for Qwen). They are not calibrated chances and are spread over thousands of movies, so they are small.
+Qwen's lists in the API were regenerated rather than taken from the evaluation run; GPU beam search isn't bit-for-bit
+repeatable, so they score HR@10 0.232 instead of the reported 0.236 (hit@1 is the same, 0.067).
 
 Build the tables, then serve them:
 
