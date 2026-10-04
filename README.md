@@ -34,6 +34,16 @@ uvicorn app:app                         # UI + API on http://localhost:8000
 docker build -t playground .            # or: one image with both (port 8080 / $PORT, ready for Cloud Run)
 ```
 
+**Deploy** (Google Cloud Run, project `project-playground-mazi`, region `asia-southeast2`). The data tables are not in
+the image: they live in the private bucket `gs://project-playground-mazi-data`, mounted read-only at `/mnt/data`.
+
+```bash
+# update the data (e.g. a new genrec lookup table), then restart by redeploying
+gcloud storage cp genrec/artifacts/lookup/*.csv gs://project-playground-mazi-data/genrec/lookup/
+# rebuild and deploy the code (UI + API); .gcloudignore keeps data and models out of the upload
+gcloud run deploy playground --source . --region=asia-southeast2 --project=project-playground-mazi
+```
+
 **Add a project:** one line in `PROJECTS` in `app.py`, its install block in the [`Dockerfile`](Dockerfile), and an
 entry + page in [`web/src/projects/`](web/src/projects/). Tests: `pytest` from the repo root.
 
