@@ -176,8 +176,13 @@ main { padding: 40px 0 64px; }
 .poster-art.has-image { padding: 0; }
 .poster-art img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .poster-caption { margin-bottom: 6px; }
-.caption-title { font-weight: 600; font-size: 13px; line-height: 1.25; color: var(--text); overflow-wrap: anywhere; }
-.caption-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+/* fixed caption height (2 title lines + 1 meta line), so rank and p line up across a row */
+.caption-title {
+  font-weight: 600; font-size: 13px; line-height: 1.25; color: var(--text); overflow-wrap: anywhere;
+  display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  min-height: 2.5em;
+}
+.caption-meta { font-size: 11px; color: var(--muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .poster-letter {
   position: absolute; top: 8px; right: -6px; font-size: 150px; font-weight: 900; line-height: 1; opacity: 0.16;
   pointer-events: none; user-select: none;
