@@ -10,3 +10,5 @@
 **/artifacts
 **/notebooks
 **/results
+**/node_modules
+web/dist

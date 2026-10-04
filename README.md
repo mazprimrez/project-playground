@@ -7,20 +7,35 @@ notebooks and tests - nothing is shared between them.
 |---|---|---|
 | [`genrec/`](genrec/) | **Generative recommendation**: Qwen2.5-0.5B fine-tuned to know the movie catalogue and predict what a user watches next, compared with SASRec, TensorFlow Recommenders and collaborative filtering on MovieLens-1M; a lookup API | HR@10 0.236 (LLM) vs 0.294 (SASRec) vs 0.024 (popularity), full ranking |
 
-## API
+## Portfolio site and API
 
-[`app.py`](app.py) serves every project's API from one server, each under its own prefix. It only mounts each
-project's own `serving/app.py`, which still runs and deploys on its own. A project that fails to import or start
-answers 503, and the other projects keep working.
+One server for everything: [`app.py`](app.py) serves the portfolio UI ([`web/`](web/), React + TypeScript + Vite)
+at `/` and every project's API under `/api/<project>/`. It only mounts each project's own `serving/app.py`, which
+still runs on its own; a project that fails to import or start answers 503, and the rest keeps working.
+
+| URL | what |
+|---|---|
+| `/` , `/projects/<project>` | the portfolio UI |
+| `/api` , `/api/health` , `/api/docs` | the list of projects, their status, the server's API docs |
+| `/api/genrec/...` | genrec's API (docs: `/api/genrec/docs`) |
+
+**Develop** (two terminals; the UI reloads on save and forwards `/api` to the Python server):
 
 ```bash
-pip install -e "genrec[serve]"
-uvicorn app:app --reload          # index: http://localhost:8000/  health: /health  genrec: /genrec/docs
-docker build -t playground-api .  # one image for all of them (Hugging Face Spaces-ready, port 7860)
+pip install -e "genrec[serve]" && uvicorn app:app --reload     # API on http://localhost:8000
+cd web && npm install && npm run dev                            # UI on http://localhost:5173
 ```
 
-To add a project, add one line to `PROJECTS` in `app.py` and add its install block to the [`Dockerfile`](Dockerfile).
-Root tests: `pytest` from the repo root.
+**Run it like production** (one server, one URL):
+
+```bash
+cd web && npm run build && cd ..        # -> web/dist
+uvicorn app:app                         # UI + API on http://localhost:8000
+docker build -t playground .            # or: one image with both (port 8080 / $PORT, ready for Cloud Run)
+```
+
+**Add a project:** one line in `PROJECTS` in `app.py`, its install block in the [`Dockerfile`](Dockerfile), and an
+entry + page in [`web/src/projects/`](web/src/projects/). Tests: `pytest` from the repo root.
 
 ## Conventions
 
