@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 import { useJson } from "../../lib/api";
 import Explorer, { API } from "./Explorer";
@@ -18,7 +18,6 @@ export default function GenrecPage() {
 
   return (
     <div>
-      <Link to="/" className="back">← All projects</Link>
       <Explorer userId={userParam ? Number(userParam) : null} users={users.data}
                 onPick={(id) => setParams({ user: String(id) })} />
     </div>

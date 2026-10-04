@@ -12,6 +12,7 @@
   --accent-soft: #e3eefb;
   --good: #0f7b3a;
   --good-soft: #e2f3e8;
+  --on-good: #ffffff;
   --bad: #b42318;
   --track: #e9e8e4;
   --m-random: #8a8984;
@@ -40,6 +41,7 @@
     --accent-soft: #1b2b40;
     --good: #4cc27a;
     --good-soft: #17301f;
+    --on-good: #0b0b0b;
     --bad: #f08a80;
     --track: #2b2b28;
     --m-random: #8f8e86;
@@ -136,96 +138,63 @@ main { padding: 40px 0 64px; }
 .eyebrow.muted { color: var(--muted); }
 
 /* ---------- user explorer */
-.explorer > * + * { margin-top: 36px; }
+.explorer > * + * { margin-top: 40px; }
 
-.user-head { display: grid; grid-template-columns: auto 1fr auto auto; align-items: center; gap: 24px; padding: 24px; }
-.avatar {
-  width: 64px; height: 64px; border-radius: 12px; background: var(--accent); color: #fff; font-weight: 700;
-  display: grid; place-items: center; font-size: 15px; font-variant-numeric: tabular-nums;
+.user-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px 32px; flex-wrap: wrap; margin-bottom: 8px; }
+.user-head h1 { font-size: clamp(28px, 4vw, 36px); letter-spacing: -0.02em; font-weight: 700; }
+.user-head p { color: var(--text-2); font-size: 14px; margin-top: 6px; }
+.user-actions { display: flex; align-items: center; gap: 20px; font-size: 14px; }
+.link-btn {
+  background: none; border: 0; padding: 0; cursor: pointer; color: var(--text); font-weight: 600;
+  text-decoration: underline; text-underline-offset: 4px;
 }
-.user-id h2 { font-size: clamp(24px, 3.5vw, 32px); letter-spacing: -0.01em; margin: 2px 0; }
-.user-id p { color: var(--text-2); font-size: 14px; }
-.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
-.chip { font-size: 13px; font-weight: 600; border-radius: 999px; padding: 4px 12px; white-space: nowrap; }
-.chip-n { font-weight: 500; opacity: 0.8; margin-left: 4px; font-size: 11px; }
-.user-actions { display: flex; flex-direction: column; gap: 8px; align-items: stretch; }
-.id-form { display: flex; gap: 6px; }
+.link-btn:hover { color: var(--accent); }
+.id-form { display: flex; align-items: center; gap: 10px; color: var(--muted); }
 .id-form input {
-  width: 0; flex: 1; min-width: 70px; padding: 6px 10px; border: 1px solid var(--border); border-radius: 8px;
-  background: var(--surface); font-size: 14px; font-variant-numeric: tabular-nums;
+  width: 80px; padding: 4px 0; border: 0; border-bottom: 1px solid var(--border); background: none; outline: none;
+  font-size: 14px; font-variant-numeric: tabular-nums;
 }
-.id-form .btn { padding: 6px 12px; }
+.id-form input:focus { border-bottom-color: var(--text); }
+.id-form button { background: none; border: 0; cursor: pointer; font-size: 16px; color: var(--text); padding: 0 4px; }
 
-.row-head { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 12px; margin-bottom: 12px; }
-.row-head h3 { font-size: 20px; }
-.row-tag { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
-.row-desc { color: var(--text-2); font-size: 13px; }
-.row-stats { margin-left: auto; display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--text-2); }
-.row-match strong { color: var(--text); font-variant-numeric: tabular-nums; }
+.row-title { font-size: 15px; font-weight: 600; margin-bottom: 14px; }
 
-/* a horizontally scrolling row of posters (scrolls inside itself, never the page) */
-.poster-row {
-  display: flex; gap: 12px; overflow-x: auto; padding: 4px 4px 12px; margin: 0 -4px;
-  scroll-snap-type: x proximity; scrollbar-width: thin;
-}
-.poster { flex: 0 0 156px; scroll-snap-align: start; }
+/* a row of 10 cards: fits the width on desktop, scrolls inside itself on small screens (never the page) */
+.poster-row { display: flex; gap: 10px; overflow-x: auto; padding: 4px 4px 8px; margin: -4px -4px 0; scrollbar-width: thin; }
+.poster { flex: 0 0 max(120px, calc((100% - 9 * 10px) / 10)); min-width: 0; }
 .poster-art {
-  position: relative; aspect-ratio: 2 / 3; border-radius: 10px; overflow: hidden; padding: 12px;
+  position: relative; aspect-ratio: 2 / 3; border-radius: 6px; overflow: hidden; background: var(--surface-2);
   display: flex; flex-direction: column; justify-content: flex-end;
 }
-.poster-art.has-image { padding: 0; }
 .poster-art img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.poster-caption { margin-bottom: 6px; }
-/* fixed caption height (2 title lines + 1 meta line), so rank and p line up across a row */
-.caption-title {
-  font-weight: 600; font-size: 13px; line-height: 1.25; color: var(--text); overflow-wrap: anywhere;
+.poster-art.has-image::after {     /* fade under the title so it reads on any poster */
+  content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgb(0 0 0 / 0.88) 0%, rgb(0 0 0 / 0.45) 32%, transparent 60%);
+}
+.poster-top { position: absolute; top: 10px; left: 10px; right: 10px; z-index: 1; display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+.poster-p {
+  font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; color: #fff;
+  background: rgb(0 0 0 / 0.72); border-radius: 4px; padding: 2px 6px;   /* readable on any poster */
+}
+.poster-text { position: relative; z-index: 1; padding: 10px; }
+.poster-title {
+  font-size: 13px; font-weight: 600; line-height: 1.2; color: var(--text);
   display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-  min-height: 2.5em;
 }
-.caption-meta { font-size: 11px; color: var(--muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.poster-letter {
-  position: absolute; top: 8px; right: -6px; font-size: 150px; font-weight: 900; line-height: 1; opacity: 0.16;
-  pointer-events: none; user-select: none;
+.poster-meta { font-size: 11px; color: var(--muted); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.has-image .poster-title { color: #fff; }
+.has-image .poster-meta { color: rgb(255 255 255 / 0.72); }
+.poster-below { font-size: 12px; margin-top: 8px; line-height: 1.35; white-space: nowrap; }
+
+/* the movie they actually watched next: green ring + badge wherever it appears */
+.poster.is-next .poster-art { outline: 2px solid var(--good); outline-offset: 3px; }
+.watched-next {
+  display: inline-flex; align-items: center; gap: 5px; background: var(--good); color: var(--on-good);
+  font-size: 11px; font-weight: 600; border-radius: 4px; padding: 3px 7px; white-space: nowrap;
 }
-.poster-badges { position: absolute; top: 8px; left: 8px; right: 8px; display: flex; flex-wrap: wrap; gap: 4px; justify-content: flex-end; }
-.poster-title { position: relative; font-weight: 800; font-size: 16px; line-height: 1.15; overflow-wrap: anywhere; }
-.poster-meta { position: relative; font-size: 11px; opacity: 0.85; margin-top: 4px; }
-.poster-foot { padding: 8px 2px 0; font-size: 12px; }
-.foot-line { display: flex; justify-content: space-between; gap: 6px; }
-.foot-rank { color: var(--muted); font-variant-numeric: tabular-nums; }
-.foot-p { font-family: var(--mono); font-size: 12px; color: var(--text); }
-.foot-track { height: 4px; background: var(--track); border-radius: 2px; margin-top: 6px; overflow: hidden; }
-.foot-fill { height: 100%; border-radius: 2px; min-width: 2px; }
+.found { color: var(--good); font-weight: 500; }
+.not-found { color: var(--muted); }
 
-.pill { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; border-radius: 6px; padding: 3px 7px; white-space: nowrap; }
-.pill-match { background: var(--accent); color: #fff; }
-.pill-count { background: #fff; color: #16150f; margin-right: auto; order: -1; }
-.pill-next { background: var(--good); color: #fff; order: -2; }
-.row-stats .pill { font-size: 11px; }
-.pill-miss { background: var(--surface-2); color: var(--muted); }
-
-/* the movie they actually watched next: green ring wherever it appears */
-.poster.is-next .poster-art { outline: 3px solid var(--good); outline-offset: 2px; }
-.poster.is-next .poster-badges { justify-content: flex-start; }
-
-.spotlight { display: flex; gap: 28px; align-items: center; background: var(--good-soft); border-color: transparent; padding: 24px; }
-.spotlight .poster { flex: 0 0 170px; }
-.spotlight h3 { font-size: clamp(22px, 3vw, 28px); margin-top: 6px; }
-.spotlight-text p { color: var(--text-2); margin-top: 6px; }
-.spotlight-note { font-size: 14px; max-width: 520px; }
-.found-list { list-style: none; padding: 0; margin: 12px 0 0; display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 14px; }
-.found-list li { display: flex; align-items: center; gap: 6px; }
-.dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
-
-@media (max-width: 860px) {
-  .user-head { grid-template-columns: auto 1fr; }
-  .taste, .user-actions { grid-column: 1 / -1; }
-  .user-actions { flex-direction: row; flex-wrap: wrap; }
-  .row-stats { margin-left: 0; width: 100%; }
-}
 @media (max-width: 560px) {
   main { padding-top: 24px; }
   .nav { gap: 12px; }
-  .spotlight { flex-direction: column; align-items: flex-start; }
-  .poster { flex-basis: 140px; }
 }
