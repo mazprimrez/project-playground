@@ -47,8 +47,8 @@ the same kind of 1,000 test users, full ranking over the 4,000 movies.
 |---|---|---|---|---|
 | random | 0.000 | 0.001 | 0.000 | 0.005 |
 | most popular | 0.018 | 0.088 | 0.046 | 0.024 |
-| TFRS two-tower (user ID) | 0.019 | 0.096 | 0.051 | 0.057 |
-| TFRS sequential (GRU, last 20) | 0.020 | 0.110 | 0.058 | 0.167 |
+| TFRS two-tower (user ID) | 0.018 | 0.097 | 0.051 | 0.057 |
+| TFRS sequential (GRU, last 20) | 0.021 | 0.107 | 0.056 | 0.167 |
 | SASRec-20 (last 20 ratings) | 0.040 | 0.174 | 0.097 | 0.263 |
 | **SASRec-200** | **0.042** | **0.182** | **0.100** | 0.294 |
 | Qwen2.5-0.5B | | | | 0.236 |
