@@ -35,6 +35,37 @@ What we learned:
 - The fine-tuned model still knows the catalogue (exact-match recall on trained movies: director 97%, genres 91%,
   "which movie is this plot?" 98%) - things SASRec can't do.
 
+## Recent movies (MovieLens 32M, cut to 1M ratings)
+
+ML-1M stops in 2000. `notebooks/ml32m-recent/` builds an ML-1M-sized dataset of **recent movies** from
+[MovieLens 32M](https://grouplens.org/datasets/movielens/32m/): the 4,000 most-rated movies released 2010-2023,
+10,628 users with at least 20 ratings on them, 999,878 ratings (rated 2009-2023; median 53 ratings per user vs 96 in
+ML-1M). Plots, directors, cast and posters come from TMDB (MovieLens links every movie to its TMDB id). Same split,
+the same kind of 1,000 test users, full ranking over the 4,000 movies.
+
+| model | hit@1 | HR@10 | NDCG@10 | on ML-1M (HR@10) |
+|---|---|---|---|---|
+| random | 0.000 | 0.001 | 0.000 | 0.005 |
+| most popular | 0.018 | 0.088 | 0.046 | 0.024 |
+| TFRS two-tower (user ID) | 0.019 | 0.096 | 0.051 | 0.057 |
+| TFRS sequential (GRU, last 20) | 0.020 | 0.110 | 0.058 | 0.167 |
+| SASRec-20 (last 20 ratings) | 0.040 | 0.174 | 0.097 | 0.263 |
+| **SASRec-200** | **0.042** | **0.182** | **0.100** | 0.294 |
+| Qwen2.5-0.5B | | | | 0.236 |
+
+Qwen runs on Colab (`qwen_colab.ipynb`: train, evaluate and write `qwen.csv` for the API in one go).
+Early observations: popularity is a much stronger baseline here (recent hits get rated by everyone), and the
+sequential models drop more than the order-blind two-tower - with half as many ratings per user, there is less
+sequence to learn from.
+
+| notebook | what | where / time |
+|---|---|---|
+| `01_prep.ipynb` | ML-32M → the recent 1M-rating dataset (`data/ml-32m-recent/`) | laptop, ~2 min |
+| `02_tmdb_metadata.ipynb` | TMDB plot / director / cast / poster per movie (needs `TMDB_API_KEY`) | laptop, ~8 min |
+| `sasrec.ipynb` | SASRec-200 and SASRec-20 + random / popular | laptop, ~25 min |
+| `tfrs.ipynb` | TFRS two-tower and sequential (kernel *Python (.venv-tf)*) | laptop CPU, ~20 min |
+| `qwen_colab.ipynb` | Qwen: train, evaluate, export `qwen.csv` | Colab GPU, ~2-4 h on an L4 |
+
 ## Layout
 
 ```
@@ -47,6 +78,7 @@ src/genrec/            the package (used by the notebooks and the API)
   models/              baselines (random, popularity, ItemKNN, UserKNN), sasrec, qwen (inference), tfrs_models
 notebooks/
   movielens/           data overview (interaction-analysis), SASRec, TFRS
+  ml32m-recent/        recent movies (MovieLens 32M cut to 1M): data prep, TMDB details, SASRec, TFRS, Qwen (Colab)
 serving/               the lookup API (FastAPI) + Dockerfile
 results/               result tables (CSV)
 tests/                 pytest - incl. checks that the package reproduces the notebook results exactly
