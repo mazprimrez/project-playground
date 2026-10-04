@@ -1,4 +1,4 @@
-"""GenRec lookup API: pre-computed movie recommendations for the 1,000 MovieLens-1M test users, from five models
+"""GenRec lookup API: pre-computed movie recommendations for 1,000 MovieLens test users, from up to five models
 (random, most popular, TFRS sequential, SASRec, fine-tuned Qwen), with each model's probability.
 
 No model runs at request time - responses are table lookups (artifacts/lookup/), so it is fast and runs
@@ -54,7 +54,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="GenRec lookup API", version="0.1.0", lifespan=lifespan,
-              description="Pre-computed recommendations from five models for the 1,000 MovieLens-1M test users.")
+              description="Pre-computed movie recommendations from several models for 1,000 MovieLens test users.")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
 
