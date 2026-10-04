@@ -14,12 +14,12 @@ which is why the numbers are lower than e.g. the SASRec paper's.
 |---|---|---|---|
 | random | 0.001 | 0.005 | 0.003 |
 | most popular | 0.005 | 0.024 | 0.013 |
-| TFRS two-tower (user ID) | 0.008 | 0.055 | 0.027 |
+| TFRS two-tower (user ID) | 0.013 | 0.057 | 0.030 |
 | UserKNN (cosine) | 0.014 | 0.081 | 0.042 |
 | ItemKNN (cosine) | 0.013 | 0.085 | 0.043 |
 | ItemKNN, last 20 ratings | 0.021 | 0.141 | 0.071 |
 | Qwen2.5-0.5B v1 (5 targets/user) | 0.041 | 0.160 | 0.093 |
-| TFRS sequential (GRU, last 20) | 0.029 | 0.173 | 0.092 |
+| TFRS sequential (GRU, last 20) | 0.026 | 0.167 | 0.089 |
 | **Qwen2.5-0.5B v2 (20 targets/user)** | **0.067** | **0.236** | **0.138** |
 | SASRec-20 (last 20 ratings) | 0.066 | 0.263 | 0.152 |
 | SASRec-200 | 0.080 | 0.294 | 0.171 |
