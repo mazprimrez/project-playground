@@ -51,11 +51,12 @@ the same kind of 1,000 test users, full ranking over the 4,000 movies.
 | TFRS sequential (GRU, last 20) | 0.021 | 0.107 | 0.056 | 0.167 |
 | SASRec-20 (last 20 ratings) | 0.040 | 0.174 | 0.097 | 0.263 |
 | **SASRec-200** | **0.042** | **0.182** | **0.100** | 0.294 |
-| Qwen2.5-0.5B (one stage: 10 targets/user, 2 epochs) | 0.019 | 0.139 | 0.069 | 0.236 |
+| Qwen2.5-0.5B, 2 epochs (10 targets/user) | 0.019 | 0.139 | 0.069 | |
+| **Qwen2.5-0.5B, 4 epochs** | **0.023** | **0.152** | **0.076** | 0.236 |
 
-Qwen runs on Colab (`qwen_colab.ipynb`: train, evaluate and write `qwen.csv` for the API in one go). Trained in
-one stage from the base model, it beats TFRS and popularity but trails SASRec, the same pattern as the one-stage
-run on ML-1M (0.207 vs SASRec-200 0.294).
+Qwen runs on Colab (`qwen_colab.ipynb`: train, evaluate and write `qwen.csv` for the API in one go). It beats TFRS
+and popularity but trails SASRec; 4 epochs reach 84% of SASRec-200's HR@10 (ML-1M's best recipe: 80%). Unlike
+ML-1M, where validation loss rose after epoch 2, more epochs still help here. The demo serves the 4-epoch lists.
 Early observations: popularity is a much stronger baseline here (recent hits get rated by everyone), and the
 sequential models drop more than the order-blind two-tower - with half as many ratings per user, there is less
 sequence to learn from.
