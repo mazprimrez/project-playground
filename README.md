@@ -5,7 +5,7 @@ notebooks and tests - nothing is shared between them.
 
 | project | what | highlights |
 |---|---|---|
-| [`genrec/`](genrec/) | **Generative recommendation**: Qwen2.5-0.5B fine-tuned to know the movie catalogue and predict what a user watches next, compared with SASRec, TensorFlow Recommenders and collaborative filtering on MovieLens-1M; a cold-start dataset (MovieTweetings); a lookup API | HR@10 0.236 (LLM) vs 0.294 (SASRec) vs 0.024 (popularity), full ranking |
+| [`genrec/`](genrec/) | **Generative recommendation**: Qwen2.5-0.5B fine-tuned to know the movie catalogue and predict what a user watches next, compared with SASRec, TensorFlow Recommenders and collaborative filtering on MovieLens-1M; a lookup API | HR@10 0.236 (LLM) vs 0.294 (SASRec) vs 0.024 (popularity), full ranking |
 
 ## API
 

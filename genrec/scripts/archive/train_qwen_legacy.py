@@ -8,7 +8,7 @@ Tasks (choose with --tasks):
   details     'Who made "<title>" and who stars in it?'     -> director + main cast
   identify    'Which movie is this? <plot snippet>'         -> title (year)
   next_movie  'A user rated these movies ... next?'         -> title (year)
-              uses ratings.dat with the same leave-last-out split as interaction-analysis.ipynb:
+              uses ratings.dat with the same leave-last-out split as genrec.data:
               the last 2 ratings of every user are never trained on (2nd-to-last = eval, last = reserved test)
 
 Examples:

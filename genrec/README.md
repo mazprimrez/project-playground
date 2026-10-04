@@ -46,10 +46,8 @@ src/genrec/            the package (used by the notebooks and the API)
   lookup.py            the pre-computed recommendation tables for the API
   models/              baselines (random, popularity, ItemKNN, UserKNN), sasrec, qwen (inference), tfrs_models
 notebooks/
-  movielens/           analysis, Wikipedia matching (phase-1), Qwen training/evaluation/scoring (Colab), SASRec,
-                       TFRS, baselines (+ the combined results table)
-  movielens/archive/   the exact Colab notebooks the reported Qwen runs used
-  coldstart/           MovieTweetings - a cold-start dataset (median 2 ratings per user)
+  movielens/           Wikipedia matching (phase-1), Qwen training/evaluation/scoring (Colab), SASRec, TFRS,
+                       baselines (+ the combined results table)
 serving/               the lookup API (FastAPI) + Dockerfile
 scripts/               data download, lookup-table build, notebook builders
 results/               result tables (CSV)
@@ -63,12 +61,11 @@ data/, artifacts/      datasets and trained models (local only, git-ignored)
 python3.12 -m venv .venv && source .venv/bin/activate
 pip install -e ".[train,prep,notebooks,serve,dev]"
 
-python scripts/download_data.py          # MovieLens-1M + MovieTweetings into data/
+python scripts/download_data.py          # MovieLens-1M into data/
 ```
 
-Then build the Wikipedia-enriched movie files: run `notebooks/movielens/phase-1.ipynb` (ML-1M) and
-`notebooks/coldstart/01_movietweetings_prep.ipynb` (MovieTweetings). Both match movies to the Kaggle dataset
-`jrobischon/wikipedia-movie-plots`.
+Then build the Wikipedia-enriched movie file (`movies_wiki.csv`): run `notebooks/movielens/phase-1.ipynb`, which
+matches movies to the Kaggle dataset `jrobischon/wikipedia-movie-plots`.
 
 TensorFlow Recommenders needs its own environment (TFRS requires Keras 2):
 
@@ -142,7 +139,6 @@ and set `GENREC_HF_REPO` and `HF_TOKEN`.
 ## Data and licenses
 
 - **MovieLens-1M** (GroupLens): research use; it may not be redistributed, so it is downloaded, not included.
-- **MovieTweetings** (Dooms et al., CrowdRec workshop at RecSys 2013) - please cite it if you use it.
 - **Wikipedia movie plots** (Kaggle `jrobischon/wikipedia-movie-plots`): text from Wikipedia (CC BY-SA).
 - **Qwen2.5-0.5B** (Alibaba Qwen): Apache-2.0.
 - Code: MIT.

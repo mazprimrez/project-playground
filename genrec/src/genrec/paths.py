@@ -6,6 +6,5 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]   # the genrec/ project folder (src layout: genrec/src/genrec/paths.py)
 DATA_DIR = Path(os.environ.get("GENREC_DATA_DIR", ROOT / "data"))
 ML1M_DIR = DATA_DIR / "ml-1m"
-MOVIETWEETINGS_DIR = DATA_DIR / "movietweetings"
 RESULTS_DIR = ROOT / "results"
 ARTIFACTS_DIR = Path(os.environ.get("GENREC_ARTIFACTS_DIR", ROOT / "artifacts"))

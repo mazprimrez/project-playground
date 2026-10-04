@@ -1,4 +1,4 @@
-"""MovieLens-format data (ML-1M, MovieTweetings) and the leave-last-out split shared by every experiment.
+"""MovieLens-format data (ML-1M) and the leave-last-out split shared by every experiment.
 
 The split: each user's ratings are ordered by timestamp (stable sort, so same-second ratings keep file order);
 train on items[:-2], validate on items[-2], test on items[-1].

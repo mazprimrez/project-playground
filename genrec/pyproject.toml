@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "genrec"
 version = "0.1.0"
-description = "Generative (LLM) movie recommendation experiments on MovieLens-1M and MovieTweetings, with a lookup API"
+description = "Generative (LLM) movie recommendation experiments on MovieLens-1M, with a lookup API"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
