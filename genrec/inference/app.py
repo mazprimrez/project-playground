@@ -4,7 +4,7 @@ any list of movies from its 4,000-movie catalogue (2010-2023). CPU only: one req
     POST /recommend {"movie_ids": [79132, 109487, 134130], "k": 10}      MovieLens IDs, oldest first
 
 Environment: HF_TOKEN (secret, reads the private Hugging Face model repo), MODEL_REPO, NUM_BEAMS (fewer = faster),
-MODEL_PATH (a local folder instead of the Hub, for testing).
+NUM_THREADS (PyTorch threads: the vCPUs the service gets), MODEL_PATH (a local folder instead of the Hub, for testing).
 """
 from __future__ import annotations
 
@@ -24,13 +24,15 @@ from genrec.models.qwen import QwenRecommender
 
 MODEL_REPO = os.environ.get("MODEL_REPO", "sparklingdust/genrec-qwen2.5-0.5b-movies")
 NUM_BEAMS = int(os.environ.get("NUM_BEAMS", "20"))
+# os.cpu_count() can report the whole host, not the vCPUs this container gets: too many threads slow PyTorch down
+NUM_THREADS = int(os.environ.get("NUM_THREADS") or os.cpu_count() or 2)
 STATE: dict = {}
 LOCK = threading.Lock()          # one generation at a time: they would only compete for the same CPU cores
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    torch.set_num_threads(os.cpu_count() or 2)
+    torch.set_num_threads(NUM_THREADS)
     path = os.environ.get("MODEL_PATH") or snapshot_download(MODEL_REPO, token=os.environ.get("HF_TOKEN"))
     movies = load_movies(os.path.join(path, "catalogue"))
     STATE["rec"] = QwenRecommender(path, movies, device="cpu")
@@ -77,7 +79,8 @@ def movie_pick(rank: int, movie_id: int, title: str, probability: float) -> Pick
 
 @app.get("/")
 def index():
-    return {"model": MODEL_REPO, "ready": "rec" in STATE, "num_beams": NUM_BEAMS, "docs": "/docs"}
+    return {"model": MODEL_REPO, "ready": "rec" in STATE, "num_beams": NUM_BEAMS, "threads": torch.get_num_threads(),
+            "cpu_count": os.cpu_count(), "docs": "/docs"}
 
 
 @app.get("/health")

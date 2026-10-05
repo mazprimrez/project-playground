@@ -2,6 +2,7 @@
 .venv/
 .venv-*/
 node_modules/
+.env
 
 # the UI build (web/dist) - built by npm run build or the Dockerfile
 web/dist/

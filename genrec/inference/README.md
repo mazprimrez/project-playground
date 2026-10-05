@@ -7,6 +7,10 @@ and the first call after idle also loads the model.
 - `POST /recommend` with `{"movie_ids": [79132, 109487, 134130], "k": 10}` (MovieLens IDs, oldest first)
 - `GET /health`, interactive docs at `/docs`
 
+Cloud Run settings (kept across deploys): 2 vCPU, 6 GiB, at most 1 instance (caps the cost), scales to zero,
+`NUM_THREADS=2` (the container reports more CPUs than it gets; extra threads made it ~1.5x slower) and `NUM_BEAMS=15`
+(~30 s per call; 30 beams, as in the evaluation, takes ~40 s and gave the same top 5 in tests).
+
 The model is downloaded at startup from the private Hugging Face repo
 [sparklingdust/genrec-qwen2.5-0.5b-movies](https://huggingface.co/sparklingdust/genrec-qwen2.5-0.5b-movies) with
 the `HF_TOKEN` secret. Deployed by `.github/workflows/deploy-model.yml` when this folder changes.
