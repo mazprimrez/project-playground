@@ -199,3 +199,40 @@ main { padding: 40px 0 64px; }
   main { padding-top: 24px; }
   .nav { gap: 12px; }
 }
+
+/* ---------- genrec: tabs and "try your own" */
+.tabs { display: flex; gap: 24px; border-bottom: 1px solid var(--border); margin-bottom: 32px; }
+.tabs button {
+  background: none; border: 0; padding: 0 0 10px; margin-bottom: -1px; cursor: pointer; font-size: 15px;
+  color: var(--muted); border-bottom: 2px solid transparent;
+}
+.tabs button.active { color: var(--text); font-weight: 600; border-bottom-color: var(--text); }
+.tabs button:hover { color: var(--text); }
+
+.search { position: relative; max-width: 520px; }
+.search input {
+  width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface);
+  font-size: 15px;
+}
+.search input:focus { outline: none; border-color: var(--text); }
+.search-results {
+  position: absolute; left: 0; right: 0; top: calc(100% + 4px); z-index: 10; list-style: none; margin: 0; padding: 4px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 24px rgb(0 0 0 / 0.18);
+}
+.search-results button {
+  display: flex; align-items: center; gap: 10px; width: 100%; padding: 6px 8px; border: 0; border-radius: 6px;
+  background: none; cursor: pointer; text-align: left; font-size: 14px;
+}
+.search-results button:hover, .search-results button:focus-visible { background: var(--surface-2); }
+.search-results img, .search-results .thumb { width: 30px; height: 45px; border-radius: 3px; object-fit: cover; background: var(--surface-2); flex: none; }
+.search-results small { display: block; color: var(--muted); font-size: 12px; }
+
+.poster-row.picked { margin-top: 16px; }
+.remove {
+  width: 24px; height: 24px; border-radius: 50%; border: 0; cursor: pointer; font-size: 16px; line-height: 1;
+  background: rgb(0 0 0 / 0.72); color: #fff;
+}
+.remove:hover { background: var(--bad); }
+
+.try-run { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.try-note { color: var(--text-2); font-size: 14px; }

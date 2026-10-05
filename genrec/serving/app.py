@@ -173,6 +173,17 @@ def compare(user_id: int, k: int = Query(10, ge=1, le=10)):
     return [recommendations_for(user_id, m, k) for m in TABLES["models"]["model"]]
 
 
+@app.get("/movies", response_model=list[Movie])
+def search_movies(q: str = Query(..., min_length=1, max_length=100, description="part of a title"),
+                  limit: int = Query(10, ge=1, le=50)):
+    """Movies whose title contains `q` (case-insensitive); titles starting with it come first."""
+    titles = TABLES["movies"]["title"]
+    hits = titles[titles.str.contains(q, case=False, regex=False)]
+    starts = hits.str.lower().str.replace(r"^(the|a|an) ", "", regex=True).str.startswith(q.lower().strip())
+    order = hits.index[(~starts).argsort(kind="stable")][:limit]
+    return [movie(m) for m in order]
+
+
 @app.get("/movies/{movie_id}", response_model=Movie)
 def get_movie(movie_id: int):
     if movie_id not in TABLES["movies"].index:

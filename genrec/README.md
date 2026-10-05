@@ -148,6 +148,7 @@ uvicorn serving.app:app --reload               # interactive docs: http://localh
 | `GET /users/{user_id}?history=20` | recent history + the movie they actually rated next |
 | `GET /users/{user_id}/recommendations?model=qwen&k=10` | ranked movies with `probability` and `is_next_movie` (default model: qwen if loaded, else the best by HR@10) |
 | `GET /users/{user_id}/compare` | every model's list for the user (side by side) |
+| `GET /movies?q=inter&limit=10` | catalogue search by title (for the live demo) |
 | `GET /movies/{movie_id}` | title, genres, year, `poster_url` (TMDB, when `movies.csv` has a `poster_path`) |
 
 ```bash

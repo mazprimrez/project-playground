@@ -59,3 +59,5 @@ def test_compare_and_movie(client):
     assert [x["model"] for x in c] == ["sasrec", "qwen"] and [x["hit"] for x in c] == [True, True]
     assert client.get("/movies/3").json()["genres"] == ["Horror"]
     assert client.get("/movies/3").json()["poster_url"] is None             # no poster found: the UI draws one
+    assert [m["title"] for m in client.get("/movies", params={"q": "fa"}).json()] == ["Fargo (1996)"]
+    assert [m["movie_id"] for m in client.get("/movies", params={"q": "a"}).json()][:1] == [3]   # "Alien" starts with a
