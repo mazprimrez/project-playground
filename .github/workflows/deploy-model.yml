@@ -9,6 +9,7 @@ on:
     paths:
       - genrec/inference/**
       - genrec/src/**
+      - "!genrec/src/genrec/lookup.py"     # the API's tables, not used by the model service
       - genrec/pyproject.toml
       - .github/workflows/deploy-model.yml
   workflow_dispatch:

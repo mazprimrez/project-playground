@@ -17,6 +17,7 @@ const MODELS: Record<string, { name: string }> = {
   qwen: { name: "GenRec" },
   sasrec: { name: "SASRec" },
   "tfrs-sequential": { name: "TFRS" },
+  "cf-cosine": { name: "CF (cosine)" },
 };
 const ORDER = Object.keys(MODELS);
 const rankOf = (m: string) => (ORDER.indexOf(m) + 1 || 99);

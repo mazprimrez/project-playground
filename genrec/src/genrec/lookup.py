@@ -29,6 +29,7 @@ DESCRIPTIONS = {
     "tfrs-sequential": "TensorFlow Recommenders retrieval model: a GRU over the last 20 movies",
     "sasrec": "SASRec: a small transformer over the user's last 200 movie IDs (the standard sequential recommender)",
     "qwen": "Qwen2.5-0.5B fine-tuned on the catalogue and next-movie prediction, reads the last 20 titles",
+    "cf-cosine": "Collaborative filtering (ItemKNN): movies similar to the user's last 20, by cosine similarity",
 }
 
 
