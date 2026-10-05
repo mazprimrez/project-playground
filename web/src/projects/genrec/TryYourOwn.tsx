@@ -8,8 +8,9 @@ import { Poster, type Movie } from "./posters";
 const MODEL_URL = import.meta.env.VITE_MODEL_URL ?? "https://genrec-model-114282263198.asia-southeast2.run.app";
 const MAX_PICKS = 20;            // the model reads the last 20 movies
 
+type Reason = { movie_id: number; title: string; drop: number };
 type Pick = { rank: number; movie_id: number; title: string; genres: string[]; year: number | null;
-              poster_url: string | null; probability: number };
+              poster_url: string | null; probability: number; because: Reason[] | null };
 type Result = { recommendations: Pick[]; seconds: number; num_beams: number };
 
 const pct = (p: number) => `${(p * 100).toFixed(p < 0.01 ? 2 : 1)}%`;
@@ -20,6 +21,7 @@ export default function TryYourOwn() {
   const [error, setError] = useState<string | null>(null);
   const [running, setRunning] = useState(false);
   const [elapsed, setElapsed] = useState(0);
+  const [explain, setExplain] = useState(false);
 
   // count the seconds while the model works
   useEffect(() => {
@@ -37,8 +39,8 @@ export default function TryYourOwn() {
     try {
       const res = await fetch(`${MODEL_URL}/recommend`, {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ movie_ids: picks.map((m) => m.movie_id), k: 10 }),
-        signal: AbortSignal.timeout(5 * 60 * 1000),
+        body: JSON.stringify({ movie_ids: picks.map((m) => m.movie_id), k: 10, explain }),
+        signal: AbortSignal.timeout(10 * 60 * 1000),
       });
       if (!res.ok) {
         const body = await res.json().catch(() => null);
@@ -72,10 +74,18 @@ export default function TryYourOwn() {
         <button className="btn dark" onClick={recommend} disabled={!picks.length || running}>
           {running ? `Thinking… ${elapsed}s` : "Recommend"}
         </button>
+        <label className="try-explain">
+          <input type="checkbox" checked={explain} onChange={(e) => setExplain(e.target.checked)} disabled={running} />
+          Explain why
+        </label>
         <span className="try-note">
           {running
-            ? "The model runs on a CPU: this takes up to a minute, longer if it has to wake up first."
-            : "GenRec (Qwen2.5-0.5B) reads your list and writes the titles it expects you to watch next."}
+            ? explain
+              ? "Recommending, then testing which of your last 10 movies each pick depends on: this can take a few minutes."
+              : "The model runs on a CPU: this takes up to a minute, longer if it has to wake up first."
+            : explain
+              ? "Each pick gets the movies it depends on most - measured by removing them one at a time. Takes a few minutes."
+              : "GenRec (Qwen2.5-0.5B) reads your list and writes the titles it expects you to watch next."}
         </span>
       </section>
 
@@ -87,7 +97,11 @@ export default function TryYourOwn() {
             {result.recommendations.map((r) => (
               <Poster key={r.movie_id}
                       movie={{ movie_id: r.movie_id, title: r.title, genres: r.genres, year: r.year, poster_url: r.poster_url }}
-                      top={<span className="poster-p">{pct(r.probability)}</span>} />
+                      top={<span className="poster-p">{pct(r.probability)}</span>}
+                      below={r.because && (r.because.length
+                        ? <span className="because">Because of {r.because.map((b, i) => (
+                            <span key={b.movie_id}>{i > 0 && ", "}<strong>{b.title.replace(/ \(\d{4}\)$/, "")}</strong> −{Math.round(b.drop * 100)}%</span>))}</span>
+                        : <span className="because muted">No single movie stands out</span>)} />
             ))}
           </div>
         </section>

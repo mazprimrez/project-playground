@@ -236,3 +236,9 @@ main { padding: 40px 0 64px; }
 
 .try-run { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
 .try-note { color: var(--text-2); font-size: 14px; }
+
+.try-explain { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; color: var(--text); cursor: pointer; }
+.poster-below:has(.because) { white-space: normal; }
+.because { display: block; font-size: 11px; line-height: 1.4; color: var(--text-2); }
+.because strong { color: var(--text); font-weight: 600; }
+.because.muted { color: var(--muted); }

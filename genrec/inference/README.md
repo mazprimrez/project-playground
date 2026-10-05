@@ -5,6 +5,9 @@ get the model's top 10 next movies. Runs on Cloud Run (CPU, service `genrec-mode
 and the first call after idle also loads the model.
 
 - `POST /recommend` with `{"movie_ids": [79132, 109487, 134130], "k": 10}` (MovieLens IDs, oldest first)
+- add `"explain": true` to also get, for each pick, the movies it depends on most: each of the last 10 movies is
+  removed in turn and the pick re-scored ("because of Interstellar -52%"). Several times slower (minutes on Cloud Run;
+  the service allows 10-minute requests)
 - `GET /health`, interactive docs at `/docs`
 
 Cloud Run settings (kept across deploys): 2 vCPU, 6 GiB, at most 1 instance (caps the cost), scales to zero,
