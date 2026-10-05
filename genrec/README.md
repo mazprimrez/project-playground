@@ -52,10 +52,10 @@ the same kind of 1,000 test users, full ranking over the 4,000 movies.
 | UserKNN (cosine, k=200) | 0.028 | 0.112 | 0.064 | 0.081 |
 | ItemKNN (cosine, k=50) | 0.021 | 0.118 | 0.063 | 0.085 |
 | ItemKNN (cosine, k=50), last 20 ratings | 0.022 | 0.125 | 0.065 | 0.141 |
-| SASRec-20 (last 20 ratings) | 0.040 | 0.174 | 0.097 | 0.263 |
-| **SASRec-200** | **0.042** | **0.182** | **0.100** | 0.294 |
 | Qwen2.5-0.5B, 2 epochs (10 targets/user) | 0.019 | 0.139 | 0.069 | |
 | **Qwen2.5-0.5B, 4 epochs** | **0.023** | **0.152** | **0.076** | 0.236 |
+| SASRec-20 (last 20 ratings) | 0.040 | 0.174 | 0.097 | 0.263 |
+| **SASRec-200** | **0.042** | **0.182** | **0.100** | 0.294 |
 
 Qwen runs on Colab (`qwen_colab.ipynb`: train, evaluate and write `qwen.csv` for the API in one go). It beats TFRS
 and popularity but trails SASRec; 4 epochs reach 84% of SASRec-200's HR@10 (ML-1M's best recipe: 80%). Unlike
