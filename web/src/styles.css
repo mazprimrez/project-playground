@@ -242,3 +242,70 @@ main { padding: 40px 0 64px; }
 .because { display: block; font-size: 11px; line-height: 1.4; color: var(--text-2); }
 .because strong { color: var(--text); font-weight: 600; }
 .because.muted { color: var(--muted); }
+
+/* ---------- eras: the tour replay */
+.eras > * + * { margin-top: 28px; }
+.e-choice { --c: var(--m-qwen); }
+.e-prophet { --c: var(--m-sasrec); }
+.e-recent { --c: var(--m-tfrs); }
+.e-most_worn { --c: var(--m-popular); }
+.e-rotation { --c: var(--m-random); }
+
+.eras-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px 32px; flex-wrap: wrap; }
+.eras-head h1 { font-size: clamp(28px, 4vw, 36px); letter-spacing: -0.02em; margin-top: 6px; }
+.eras-head p:not(.eyebrow) { color: var(--text-2); font-size: 14px; margin-top: 6px; }
+.eras-controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 14px; }
+.eras-controls select {
+  font: inherit; font-size: 14px; color: var(--text); background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 7px 10px; max-width: min(320px, 100%);
+}
+.eras-controls .link-btn { margin-left: 8px; }
+.eras-controls .link-btn:disabled { opacity: 0.5; cursor: default; }
+
+.scoreboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 12px; }
+.score {
+  display: flex; flex-direction: column; gap: 6px; padding: 14px 16px; border-radius: var(--radius);
+  background: var(--surface); border: 1px solid var(--border); border-top: 3px solid var(--c);
+}
+.score-name { font-size: 13px; color: var(--text-2); }
+.score-value { font-size: 14px; color: var(--muted); font-variant-numeric: tabular-nums; display: flex; align-items: baseline; gap: 4px; }
+.score-value strong { font-size: 28px; color: var(--text); font-weight: 700; }
+.score-best { margin-left: auto; font-size: 11px; font-weight: 600; color: var(--on-good); background: var(--good); border-radius: 4px; padding: 2px 7px; }
+.score-bar { display: block; height: 6px; border-radius: 3px; background: var(--track); overflow: hidden; }
+.score-bar > span { display: block; height: 100%; background: var(--c); border-radius: 3px; }
+
+/* the table scrolls inside itself on small screens, never the page */
+.table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+.eras-table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 760px; }
+.eras-table th, .eras-table td { text-align: left; vertical-align: top; padding: 10px 14px; border-bottom: 1px solid var(--border); }
+.eras-table tbody tr:last-child > * { border-bottom: 0; }
+.eras-table thead th { font-size: 12px; font-weight: 600; color: var(--muted); background: var(--surface-2); white-space: nowrap; }
+.eras-table thead th[class^="e-"] { box-shadow: inset 0 3px 0 var(--c); color: var(--text); }
+.eras-table tbody th { font-weight: 600; white-space: nowrap; }
+.eras-table small { display: block; font-size: 11px; font-weight: 400; color: var(--muted); margin-top: 2px; }
+.eras-table .actual { font-weight: 500; }
+.pick { display: table-cell; }
+.pick .mark { display: inline-block; width: 18px; font-weight: 700; }
+.pick > span:last-child { display: inline-block; vertical-align: top; max-width: calc(100% - 18px); }
+.pick.hit { background: var(--good-soft); }
+.pick.hit .mark { color: var(--good); }
+.pick.miss { color: var(--text-2); }
+.pick.miss .mark { color: var(--muted); }
+.pick.none { color: var(--muted); }
+
+.overall-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.overall-list li { display: flex; flex-direction: column; gap: 6px; padding: 14px 16px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+.overall-list p { font-size: 13px; color: var(--text-2); }
+.overall-points { font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.overall-points small { font-size: 12px; font-weight: 400; color: var(--muted); }
+.eras-intro { color: var(--text-2); font-size: 14px; max-width: 760px; }
+.eras > .eras-intro { margin-top: 12px; }
+.eras-table tbody th { position: sticky; left: 0; z-index: 1; background: var(--surface); }
+.eras-table thead th:first-child { position: sticky; left: 0; z-index: 2; }
+@media (max-width: 560px) {
+  .eras-controls { width: 100%; }
+  .eras-controls select { flex: 1 1 0; min-width: 0; }
+  .eras-controls .link-btn { margin-left: 0; }
+  .eras-table { min-width: 680px; font-size: 13px; }
+  .eras-table th, .eras-table td { padding: 8px 10px; }
+}

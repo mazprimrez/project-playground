@@ -30,6 +30,7 @@ from starlette.exceptions import HTTPException
 ROOT = Path(__file__).resolve().parent
 PROJECTS = {
     "genrec": ROOT / "genrec" / "serving" / "app.py",
+    "eras": ROOT / "eras" / "serving" / "app.py",
 }
 WEB_DIST = Path(os.environ.get("PLAYGROUND_WEB_DIST", ROOT / "web" / "dist"))
 

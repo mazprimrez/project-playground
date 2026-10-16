@@ -23,4 +23,14 @@ export const PROJECTS: ProjectInfo[] = [
     stat: { label: "HR@10 on 1,000 test users", value: "LLM 0.152 · SASRec 0.182 · popularity 0.088" },
     Page: lazy(() => import("./genrec/GenrecPage")),
   },
+  {
+    slug: "eras",
+    title: "Eras Tour replay: guessing Taylor Swift's outfits",
+    tagline:
+      "Predicting each Eras Tour show's outfits and surprise songs from the shows before it, scored like the Swift " +
+      "Alert Mastermind game: a choice model against the Prophet approach of my original Medium experiment.",
+    tags: ["Time series", "Choice models", "Backtesting", "FastAPI"],
+    stat: { label: "Average game points per show", value: "choice model 21.9 · Prophet 17.1 · worn lately 15.7 (of 56)" },
+    Page: lazy(() => import("./eras/ErasPage")),
+  },
 ];

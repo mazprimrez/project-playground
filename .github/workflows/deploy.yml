@@ -22,11 +22,14 @@ jobs:
         with:
           python-version: "3.12"
           cache: pip
-          cache-dependency-path: genrec/pyproject.toml
+          cache-dependency-path: |
+            genrec/pyproject.toml
+            eras/pyproject.toml
       - name: Server tests
         run: |
-          pip install "./genrec[serve]" pytest httpx
+          pip install "./genrec[serve]" "./eras[serve]" pytest httpx
           pytest -q
+          (cd eras && pytest -q)
 
       - uses: actions/setup-node@v4
         with:
@@ -67,4 +70,5 @@ jobs:
                 --format='value(status.url)')
           curl -fsS "$url/api/health" | tee /dev/stderr | grep -q '"status":"ok"'
           curl -fsS -o /dev/null "$url/projects/genrec"
+          curl -fsS -o /dev/null "$url/projects/eras"
           echo "live: $url"

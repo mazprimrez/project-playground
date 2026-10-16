@@ -6,6 +6,7 @@ node_modules/
 
 # the UI build (web/dist) - built by npm run build or the Dockerfile
 web/dist/
+*.tsbuildinfo
 __pycache__/
 *.egg-info/
 .pytest_cache/

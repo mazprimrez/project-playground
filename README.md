@@ -6,6 +6,7 @@ notebooks and tests - nothing is shared between them.
 | project | what | highlights |
 |---|---|---|
 | [`genrec/`](genrec/) | **Generative recommendation**: Qwen2.5-0.5B fine-tuned to know the movie catalogue and predict what a user watches next, compared with SASRec, TensorFlow Recommenders and collaborative filtering on MovieLens-1M; a lookup API | HR@10 0.236 (LLM) vs 0.294 (SASRec) vs 0.024 (popularity), full ranking |
+| [`eras/`](eras/) | **Eras Tour replay**: Taylor Swift's outfit versions and surprise songs predicted show by show from the earlier shows, scored like the Swift Alert Mastermind game; a choice model vs the Prophet method of my Medium experiment | 21.9 vs 17.1 game points per show (+28%), 139 shows |
 
 ## Portfolio site and API
 
@@ -18,11 +19,12 @@ still runs on its own; a project that fails to import or start answers 503, and 
 | `/` , `/projects/<project>` | the portfolio UI |
 | `/api` , `/api/health` , `/api/docs` | the list of projects, their status, the server's API docs |
 | `/api/genrec/...` | genrec's API (docs: `/api/genrec/docs`) |
+| `/api/eras/...` | eras' API (docs: `/api/eras/docs`) |
 
 **Develop** (two terminals; the UI reloads on save and forwards `/api` to the Python server):
 
 ```bash
-pip install -e "genrec[serve]" && uvicorn app:app --reload     # API on http://localhost:8000
+pip install -e "genrec[serve]" -e "eras[serve]" && uvicorn app:app --reload     # API on http://localhost:8000
 cd web && npm install && npm run dev                            # UI on http://localhost:5173
 ```
 
@@ -41,6 +43,7 @@ the image: they live in the private bucket `gs://project-playground-mazi-data`, 
 ```bash
 # update the data (e.g. a new genrec lookup table), then restart by redeploying
 gcloud storage cp genrec/artifacts/lookup/*.csv gs://project-playground-mazi-data/genrec/lookup/
+gcloud storage cp eras/artifacts/lookup/*.csv gs://project-playground-mazi-data/eras/lookup/
 # rebuild and deploy the code (UI + API); .gcloudignore keeps data and models out of the upload
 gcloud run deploy playground --source . --region=asia-southeast2 --project=project-playground-mazi
 ```

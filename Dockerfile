@@ -1,7 +1,8 @@
 # Project Playground - the portfolio UI and every project's API in one small image (no model at runtime).
 # Build from the repo root:
 #   docker build -t playground .
-#   docker run -p 8080:8080 -v $PWD/genrec/artifacts/lookup:/app/genrec/artifacts/lookup playground
+#   docker run -p 8080:8080 -v $PWD/genrec/artifacts/lookup:/app/genrec/artifacts/lookup \
+#              -v $PWD/eras/artifacts/lookup:/app/eras/artifacts/lookup playground
 # Data is never baked in (e.g. genrec's tables are MovieLens-derived): mount it, or set each project's env vars
 # (genrec: GENREC_HF_REPO + HF_TOKEN for a private Hugging Face dataset repo).
 
@@ -27,11 +28,17 @@ RUN pip install "./genrec[serve]"
 COPY genrec/serving genrec/serving
 ENV GENREC_LOOKUP_DIR=/app/genrec/artifacts/lookup
 
+COPY eras/pyproject.toml eras/README.md eras/
+COPY eras/src eras/src
+RUN pip install "./eras[serve]"
+COPY eras/serving eras/serving
+ENV ERAS_LOOKUP_DIR=/app/eras/artifacts/lookup
+
 COPY app.py .
 COPY --from=web /web/dist web/dist
 
 # runs as a non-root user; listens on $PORT (Cloud Run sets it; 8080 otherwise)
-RUN useradd -m -u 1000 user && mkdir -p /app/genrec/artifacts && chown -R user /app
+RUN useradd -m -u 1000 user && mkdir -p /app/genrec/artifacts /app/eras/artifacts && chown -R user /app
 USER user
 EXPOSE 8080
 CMD ["sh", "-c", "exec uvicorn app:app --host 0.0.0.0 --port ${PORT:-8080}"]

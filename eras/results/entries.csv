@@ -1,0 +1,6 @@
+entry,name,outfit_method,song_method,points_per_show,outfit_points,song_points
+choice,Choice model,choice,choice,21.885,21.784,0.101
+prophet,Prophet (the article),prophet,most_played,17.094,16.978,0.115
+recent,Worn most lately,recent,most_played,15.741,15.626,0.115
+most_worn,Worn most overall,most_worn,most_played,14.964,14.849,0.115
+rotation,Rotation,rotation,most_played,14.964,14.849,0.115
