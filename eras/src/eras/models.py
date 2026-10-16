@@ -5,6 +5,8 @@ Outfits (per game category, pick one version):
     recent        the version worn most in the last 10 shows
     rotation      the version not worn for the longest (among those worn at least twice)
     prophet       the original article: a 0/1 series per version, Prophet forecasts the show's date, highest wins
+    prophet_night the same, with the night number in the city (1, 2, 3...) as an extra regressor
+                  (both: the forecasts, clipped at 0 and normalised over the versions, are the probabilities)
     choice        conditional logit: every candidate version gets features (overall / recent / this-leg share, shows
                   since last worn, worn earlier in this city, rotation rank, ...); one set of weights is learned
                   across all categories from the past shows; the highest-scoring candidate wins
@@ -126,8 +128,10 @@ def outfit_baseline(method: str, tour: Tour, category: str, t: int):
     raise ValueError(method)
 
 
-def prophet_pick(tour: Tour, category: str, t: int):
-    """The article's method. Needs `pip install prophet`; slow (one fit per version), so run it in parallel."""
+def prophet_pick(tour: Tour, category: str, t: int, night: bool = False):
+    """The article's method -> (pick, probability), or (None, None) before anything was worn. night=True adds the
+    night number as a regressor (known before the show). Needs `pip install prophet`; slow (one fit per version), so
+    run it in parallel."""
     import logging
     logging.getLogger("cmdstanpy").disabled = True
     from prophet import Prophet
@@ -135,15 +139,21 @@ def prophet_pick(tour: Tour, category: str, t: int):
     hist = tour.outfits[category][:t]
     cands = sorted({w for w in hist if w is not None})
     if not cands:
-        return None
-    dates = tour.shows.date
-    best, best_y = None, -np.inf
+        return None, None
+    shows = tour.shows
+    future = pd.DataFrame({"ds": [shows.date[t]], "night": [shows.night[t]]})
+    y = []
     for v in cands:
-        df = pd.DataFrame({"ds": dates[:t].values, "y": [float(w == v) for w in hist]})
-        y = Prophet().fit(df).predict(pd.DataFrame({"ds": [dates[t]]})).yhat.iloc[0]
-        if y > best_y:
-            best, best_y = v, y
-    return best
+        df = pd.DataFrame({"ds": shows.date[:t].values, "night": shows.night[:t].values,
+                           "y": [float(w == v) for w in hist]})
+        m = Prophet()
+        if night:
+            m.add_regressor("night")
+        y.append(m.fit(df).predict(future).yhat.iloc[0])
+    y = np.array(y)
+    p = np.clip(y, 0, None)
+    p = p / p.sum() if p.sum() > 0 else np.full(len(y), 1 / len(y))
+    return cands[int(y.argmax())], float(p[y.argmax()])
 
 
 # ---------------------------------------------------------------- surprise songs

@@ -23,7 +23,10 @@ ENTRIES = {
                "learned from the earlier shows, shared across categories plus a category-specific adjustment."),
     "prophet": ("Prophet (the article)", "prophet", "most_played",
                 "The original Medium experiment: one Prophet forecast per outfit version on its worn / not worn "
-                "series; songs: the most played so far."),
+                "series over the show dates; songs: the most played so far."),
+    "prophet_night": ("Prophet + night #", "prophet_night", "most_played",
+                      "The article's Prophet with the night number in the city (1, 2, 3...) as an extra regressor; "
+                      "songs: the most played so far."),
     "recent": ("Worn most lately", "recent", "most_played",
                "The version worn most in the last 10 shows; songs: the most played so far."),
     "most_worn": ("Worn most overall", "most_worn", "most_played",

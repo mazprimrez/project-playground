@@ -112,18 +112,20 @@ def song_rows(tour: Tour, warmup: int, progress=None) -> list:
 
 
 def _prophet_job(args):
-    tour, c, t = args
-    return c, t, M.prophet_pick(tour, c, t)
+    tour, c, t, method = args
+    return (c, t, method, *M.prophet_pick(tour, c, t, night=method == "prophet_night"))
 
 
 def prophet_rows(tour: Tour, warmup: int, processes: int = 8) -> list:
-    """The article's method on the same shows (needs prophet; ~1-2 minutes on 8 cores)."""
-    jobs = [(tour, c, t) for c in OUTFIT_CATEGORIES for t in range(warmup, tour.n) if tour.outfits[c][t] is not None]
+    """The article's method, and the same with the night number, on the same shows (needs prophet; ~5 minutes on
+    8 cores)."""
+    jobs = [(tour, c, t, m) for m in ["prophet", "prophet_night"] for c in OUTFIT_CATEGORIES
+            for t in range(warmup, tour.n) if tour.outfits[c][t] is not None]
     with Pool(processes) as pool:
         out = pool.map(_prophet_job, jobs, chunksize=4)
-    return [{"show": t, "category": c, "method": "prophet", "pick": pick, "probability": None,
+    return [{"show": t, "category": c, "method": m, "pick": pick, "probability": prob,
              "truth": tour.outfits[c][t], "correct": pick == tour.outfits[c][t],
-             "points": POINTS * (pick == tour.outfits[c][t])} for c, t, pick in out]
+             "points": POINTS * (pick == tour.outfits[c][t])} for c, t, m, pick, prob in out]
 
 
 def run(tour: Tour, warmup: int = 10, prophet: bool = True, progress=None) -> pd.DataFrame:

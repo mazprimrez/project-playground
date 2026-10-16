@@ -18,6 +18,7 @@ There are 139 replayed shows; the first 10 are only used for learning. The maxim
 |---|---|---|---|
 | **Choice model** | **21.9** | 21.8 | 0.10 |
 | Prophet (the article) + most played song | 17.1 | 17.0 | 0.12 |
+| Prophet + night number as a regressor + most played song | 16.8 | 16.7 | 0.12 |
 | Worn most in the last 10 shows + most played song | 15.7 | 15.6 | 0.12 |
 | Worn most overall + most played song | 15.0 | 14.9 | 0.12 |
 | Rotation (longest unworn) + most played song | 15.0 | 14.9 | 0.12 |
@@ -50,7 +51,9 @@ What we learned:
   can use the patterns that fit it.
 - **Prophet is the wrong tool here.** It forecasts each version's worn / not worn series on its own, as a smooth
   trend over calendar time. The versions of one category never compete with each other, and "worn last night in
-  this city" is invisible to it.
+  this city" is invisible to it. Adding the night number (1, 2, 3...) as a regressor doesn't fix that (16.8 vs
+  17.1). Its forecasts, normalised over the versions into probabilities, are overconfident: they average 52%, but
+  only a third of its picks are right.
 - **Surprise songs are luck.** Each night she played a different song (or mashup) per instrument from a pool of
   ~200 songs. Every method is correct at ~1-5% of the shows, and the choice model's song guess is no better
   than the most played song so far.
