@@ -1,4 +1,5 @@
 entry,name,outfit_method,song_method,points_per_show,outfit_points,song_points
+prophet_lags,"Prophet, improved",prophet_lags,most_played,22.043,21.928,0.115
 choice,Choice model,choice,choice,21.885,21.784,0.101
 prophet,Prophet (the article),prophet,most_played,17.094,16.978,0.115
 prophet_night,Prophet + night #,prophet_night,most_played,16.777,16.662,0.115

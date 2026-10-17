@@ -6,7 +6,7 @@ notebooks and tests - nothing is shared between them.
 | project | what | highlights |
 |---|---|---|
 | [`genrec/`](genrec/) | **Generative recommendation**: Qwen2.5-0.5B fine-tuned to know the movie catalogue and predict what a user watches next, compared with SASRec, TensorFlow Recommenders and collaborative filtering on MovieLens-1M; a lookup API | HR@10 0.236 (LLM) vs 0.294 (SASRec) vs 0.024 (popularity), full ranking |
-| [`eras/`](eras/) | **Eras Tour replay**: Taylor Swift's outfit versions and surprise songs predicted show by show from the earlier shows, scored like the Swift Alert Mastermind game; a choice model vs the Prophet method of my Medium experiment | 21.9 vs 17.1 game points per show (+28%), 139 shows |
+| [`eras/`](eras/) | **Eras Tour replay**: Taylor Swift's outfit versions and surprise songs predicted show by show from the earlier shows, scored like the Swift Alert Mastermind game; a choice model and an improved Prophet vs the Prophet method of my Medium experiment | 21.9 / 22.0 vs 17.1 game points per show (+28%), 139 shows |
 
 ## Portfolio site and API
 

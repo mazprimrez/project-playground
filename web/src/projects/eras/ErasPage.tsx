@@ -14,7 +14,7 @@ type Category = { category: string; max_points: number; actual: string; picks: R
 type ShowDetail = Show & { categories: Category[] };
 
 /** The entries shown as columns, in this order (the API has a couple more baselines, listed in the summary). */
-const COLUMNS = ["choice", "prophet", "recent"];
+const COLUMNS = ["choice", "prophet_lags", "prophet"];
 
 const fmtDate = (d: string) =>
   new Date(`${d}T00:00:00`).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" });
@@ -64,8 +64,9 @@ export default function ErasPage() {
 
       <p className="eras-intro">
         Every show of the tour, replayed: each method guesses the night's outfit versions and surprise songs from the
-        earlier shows only, then gets scored like the game. The choice model improves on the Prophet forecasts of
-        my <a href={ARTICLE} target="_blank" rel="noreferrer">original Medium experiment</a>.
+        earlier shows only, then gets scored like the game. Two improvements on the Prophet forecasts of my{" "}
+        <a href={ARTICLE} target="_blank" rel="noreferrer">original Medium experiment</a>: a choice model, and
+        Prophet given what the earlier shows say about each version.
       </p>
 
       {shows.error && <p className="error">{shows.error}</p>}

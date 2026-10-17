@@ -44,3 +44,12 @@ def test_backtest_rows_and_points(tour):
     assert acc.loc["Fearless dress", "choice"] > 0.9        # a fixed rotation is learnable
     g = B.game_points(r, "choice", "choice")
     assert len(g) == tour.n - 10 and g.max() <= 13 * POINTS + 2 * SONG_POINTS
+
+
+def test_prophet_lag_features_use_only_earlier_shows(tour):
+    # Fearless dress rotates V1, V2, V3; cities change every 3 shows
+    f = M.lag_features(tour, "Fearless dress", "V1", 6)
+    assert list(f.columns) == M.LAG_FEATURES and len(f) == 7
+    assert f.previous_show.tolist() == [0, 1, 0, 0, 1, 0, 0]          # V1 worn at shows 0, 3, 6
+    assert f.earlier_in_city.tolist() == [0, 1, 1, 0, 1, 1, 0]        # cities: shows 0-2, 3-5, 6-8
+    assert f.share_last10[6] == 2 / 6

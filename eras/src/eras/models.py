@@ -6,7 +6,11 @@ Outfits (per game category, pick one version):
     rotation      the version not worn for the longest (among those worn at least twice)
     prophet       the original article: a 0/1 series per version, Prophet forecasts the show's date, highest wins
     prophet_night the same, with the night number in the city (1, 2, 3...) as an extra regressor
-                  (both: the forecasts, clipped at 0 and normalised over the versions, are the probabilities)
+    prophet_lags  per-version regressors from the earlier shows (worn at the previous show, worn earlier in this
+                  city, shows since last worn, share of the last 10 shows), with show number as the time axis, no
+                  seasonality, logistic growth between 0 and 1 and a more flexible trend (see the README's ablation:
+                  those four settings alone make Prophet worse; with the regressors they help a little)
+                  (all: the forecasts, clipped at 0 and normalised over the versions, are the probabilities)
     choice        conditional logit: every candidate version gets features (overall / recent / this-leg share, shows
                   since last worn, worn earlier in this city, rotation rank, ...); one set of weights is learned
                   across all categories from the past shows; the highest-scoring candidate wins
@@ -128,10 +132,39 @@ def outfit_baseline(method: str, tour: Tour, category: str, t: int):
     raise ValueError(method)
 
 
-def prophet_pick(tour: Tour, category: str, t: int, night: bool = False):
-    """The article's method -> (pick, probability), or (None, None) before anything was worn. night=True adds the
-    night number as a regressor (known before the show). Needs `pip install prophet`; slow (one fit per version), so
-    run it in parallel."""
+PROPHET_VARIANTS = {
+    "prophet": {},
+    "prophet_night": {"night": True},
+    "prophet_lags": {"show_axis": True, "seasonality": False, "logistic": True, "changepoint_prior_scale": 0.5,
+                     "lags": True},
+}
+LAG_FEATURES = ["previous_show", "earlier_in_city", "log_shows_since", "share_last10"]
+
+
+def lag_features(tour: Tour, category: str, version: str, t: int) -> pd.DataFrame:
+    """For shows 0..t: LAG_FEATURES of `version`, each from the shows before that one only."""
+    hist, city = tour.outfits[category], tour.shows.city
+    rows, last, run_start = [], None, 0
+    for k in range(t + 1):
+        if k and city[k] != city[k - 1]:
+            run_start = k                                      # first night of this city
+        rows.append([
+            float(k > 0 and hist[k - 1] == version),
+            float(any(hist[j] == version for j in range(run_start, k))),
+            math.log1p(k - last if last is not None else k + 1),
+            sum(w == version for w in hist[max(0, k - 10):k]) / max(1, min(10, k)),
+        ])
+        if hist[k] == version:
+            last = k
+    return pd.DataFrame(rows, columns=LAG_FEATURES)
+
+
+def prophet_pick(tour: Tour, category: str, t: int, night: bool = False, show_axis: bool = False,
+                 seasonality: bool = True, logistic: bool = False, changepoint_prior_scale: float = 0.05,
+                 lags: bool = False):
+    """The article's method (default options) or a variant -> (pick, probability), or (None, None) before anything
+    was worn. Regressors are known before the show. Needs `pip install prophet`; slow (one fit per version), so run
+    it in parallel."""
     import logging
     logging.getLogger("cmdstanpy").disabled = True
     from prophet import Prophet
@@ -141,15 +174,26 @@ def prophet_pick(tour: Tour, category: str, t: int, night: bool = False):
     if not cands:
         return None, None
     shows = tour.shows
-    future = pd.DataFrame({"ds": [shows.date[t]], "night": [shows.night[t]]})
+    ds = (pd.Timestamp("2000-01-01") + pd.to_timedelta(np.arange(t + 1), "D") if show_axis
+          else shows.date[:t + 1].values)
+    base = pd.DataFrame({"ds": ds, "night": shows.night[:t + 1].values, "cap": 1.0, "floor": 0.0})
     y = []
     for v in cands:
-        df = pd.DataFrame({"ds": shows.date[:t].values, "night": shows.night[:t].values,
-                           "y": [float(w == v) for w in hist]})
-        m = Prophet()
+        df = base.assign(y=[float(w == v) for w in hist] + [np.nan])
+        if lags:
+            df = pd.concat([df, lag_features(tour, category, v, t)], axis=1)
+        if logistic:                       # a series stuck at 0 or 1 sits on the bounds, which logistic can't fit
+            df["y"] = df.y.clip(0.01, 0.99)
+        opts = {} if seasonality else {"weekly_seasonality": False, "yearly_seasonality": False,
+                                       "daily_seasonality": False}
+        m = Prophet(growth="logistic" if logistic else "linear", changepoint_prior_scale=changepoint_prior_scale,
+                    **opts)
         if night:
             m.add_regressor("night")
-        y.append(m.fit(df).predict(future).yhat.iloc[0])
+        if lags:
+            for f in LAG_FEATURES:
+                m.add_regressor(f, standardize=False)
+        y.append(m.fit(df.iloc[:t]).predict(df.iloc[t:]).yhat.iloc[0])
     y = np.array(y)
     p = np.clip(y, 0, None)
     p = p / p.sum() if p.sum() > 0 else np.full(len(y), 1 / len(y))

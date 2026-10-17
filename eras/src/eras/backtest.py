@@ -112,14 +112,15 @@ def song_rows(tour: Tour, warmup: int, progress=None) -> list:
 
 
 def _prophet_job(args):
-    tour, c, t, method = args
-    return (c, t, method, *M.prophet_pick(tour, c, t, night=method == "prophet_night"))
+    tour, c, t, method, options = args
+    return (c, t, method, *M.prophet_pick(tour, c, t, **options))
 
 
-def prophet_rows(tour: Tour, warmup: int, processes: int = 8) -> list:
-    """The article's method, and the same with the night number, on the same shows (needs prophet; ~5 minutes on
-    8 cores)."""
-    jobs = [(tour, c, t, m) for m in ["prophet", "prophet_night"] for c in OUTFIT_CATEGORIES
+def prophet_rows(tour: Tour, warmup: int, variants: dict | None = None, processes: int = 8) -> list:
+    """The article's Prophet and its variants (M.PROPHET_VARIANTS: name -> prophet_pick options) on the same shows
+    (needs prophet; ~3 minutes per variant on 8 cores)."""
+    variants = M.PROPHET_VARIANTS if variants is None else variants
+    jobs = [(tour, c, t, m, o) for m, o in variants.items() for c in OUTFIT_CATEGORIES
             for t in range(warmup, tour.n) if tour.outfits[c][t] is not None]
     with Pool(processes) as pool:
         out = pool.map(_prophet_job, jobs, chunksize=4)

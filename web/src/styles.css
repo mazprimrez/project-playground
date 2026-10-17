@@ -247,8 +247,10 @@ main { padding: 40px 0 64px; }
 .eras > * + * { margin-top: 28px; }
 .e-choice { --c: var(--m-qwen); }
 .e-prophet { --c: var(--m-sasrec); }
+.e-prophet_lags { --c: var(--m-popular); }
+.e-prophet_night { --c: var(--m-random); }
 .e-recent { --c: var(--m-tfrs); }
-.e-most_worn { --c: var(--m-popular); }
+.e-most_worn { --c: var(--m-random); }
 .e-rotation { --c: var(--m-random); }
 
 .eras-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px 32px; flex-wrap: wrap; }
